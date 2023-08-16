@@ -1,8 +1,11 @@
 package com.joabss.minhasfinancas.model.repository;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +40,7 @@ public class UsuarioRepositoryTest {
 		boolean result = repository.existsByEmail("usuario@email.com");
 
 		// Verificação
-		Assertions.assertTrue(result);
+		assertTrue(result);
 	}
 
 	@Test // validarEmail
@@ -48,7 +51,7 @@ public class UsuarioRepositoryTest {
 		boolean result = repository.existsByEmail("usuario@email.com");
 
 		// Verificação
-		Assertions.assertFalse(result);
+		assertFalse(result);
 	}
 
 	public Usuario autenticar(String email, String senha) {
@@ -65,7 +68,7 @@ public class UsuarioRepositoryTest {
 		Usuario usuarioSalvo = repository.save(usuario);
 
 		// Verificação
-		Assertions.assertNotNull(usuarioSalvo.getId());
+		assertNotNull(usuarioSalvo.getId());
 	}
 
 	@Test // findByEmail
@@ -78,7 +81,7 @@ public class UsuarioRepositoryTest {
 		Optional<Usuario> result = repository.findByEmail("usuario@email.com");
 
 		// Verificação
-		Assertions.assertTrue(result.isPresent());
+		assertTrue(result.isPresent());
 	}
 
 	@Test // findByEmail
@@ -89,10 +92,13 @@ public class UsuarioRepositoryTest {
 		Optional<Usuario> result = repository.findByEmail("usuario@email.com");
 
 		// Verificação
-		Assertions.assertFalse(result.isPresent());
+		assertFalse(result.isPresent());
 	}
 
-	public static Usuario criarUsuario() {
-		return Usuario.builder().nome("usuario").email("usuario@email.com").senha("senha").build();
+	public Usuario criarUsuario() {
+		return Usuario.builder()
+				.nome("usuario")
+				.email("usuario@email.com")
+				.senha("senha").build();
 	}
 }

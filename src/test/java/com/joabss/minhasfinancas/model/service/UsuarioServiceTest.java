@@ -1,8 +1,12 @@
 package com.joabss.minhasfinancas.model.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -29,7 +33,27 @@ public class UsuarioServiceTest {
 
 	@Test
 	public void deveSalvarUmUsuario() {
-		Assertions.assertThrows(RegraNegocioException.class, () -> {
+		assertDoesNotThrow(() -> {
+			// Cenário
+			Mockito.doNothing().when(service).validarEmail(Mockito.anyString());
+			Usuario usuario = criarusuario();
+			Mockito.when(repository.save(Mockito.any(Usuario.class))).thenReturn(usuario);
+
+			// Ação
+			Usuario usuarioSalvo = service.salvarUsuario(new Usuario());
+
+			// Verificação
+			assertNotNull(usuarioSalvo);
+			assertEquals(usuarioSalvo.getId(), 1L);
+			assertEquals(usuarioSalvo.getNome(), "nome");
+			assertEquals(usuarioSalvo.getEmail(), "email@email.com");
+			assertEquals(usuarioSalvo.getSenha(), "senha");
+		});
+	}
+
+	@Test
+	public void naoDeveSalvarUmUsuarioComEmailJaCadastrado() {
+		assertThrows(RegraNegocioException.class, () -> {
 			// Cenário
 			Usuario usuario = criarusuario();
 			Mockito.doThrow(RegraNegocioException.class).when(service).validarEmail("email@email.com");
@@ -43,28 +67,8 @@ public class UsuarioServiceTest {
 	}
 
 	@Test
-	public void naoDeveSalvarUmUsuarioComEmailJaCadastrado() {
-		Assertions.assertDoesNotThrow(() -> {
-			// Cenário
-			Mockito.doNothing().when(service).validarEmail(Mockito.anyString());
-			Usuario usuario = criarusuario();
-			Mockito.when(repository.save(Mockito.any(Usuario.class))).thenReturn(usuario);
-
-			// Ação
-			Usuario usuarioSalvo = service.salvarUsuario(new Usuario());
-
-			// Verificação
-			Assertions.assertNotNull(usuarioSalvo);
-			Assertions.assertEquals(usuarioSalvo.getId(), 1L);
-			Assertions.assertEquals(usuarioSalvo.getNome(), "nome");
-			Assertions.assertEquals(usuarioSalvo.getEmail(), "email@email.com");
-			Assertions.assertEquals(usuarioSalvo.getSenha(), "senha");
-		});
-	}
-
-	@Test
 	public void deveAutenticarUmUsuarioComSucesso() {
-		Assertions.assertDoesNotThrow(() -> {
+		assertDoesNotThrow(() -> {
 			// Cenario
 			String email = "email@email.com";
 			String senha = "senha";
@@ -76,13 +80,13 @@ public class UsuarioServiceTest {
 			Usuario result = service.autenticar(email, senha);
 
 			// Verificação
-			Assertions.assertNotNull(result);
+			assertNotNull(result);
 		});
 	}
 
 	@Test
 	public void deveLancarErroQuandoNaoEncontrarUsuarioCadastradoComEmailInformado() {
-		Assertions.assertThrows(ErroAutenticacao.class, () -> {
+		assertThrows(ErroAutenticacao.class, () -> {
 			// Cenario
 
 			Mockito.when(repository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
@@ -94,7 +98,7 @@ public class UsuarioServiceTest {
 
 	@Test
 	public void deveLancarErroQuandoSenhaNaoBater() {
-		Assertions.assertThrows(ErroAutenticacao.class, () -> {
+		assertThrows(ErroAutenticacao.class, () -> {
 			// Cenario
 			Usuario usuario = criarusuario();
 			Mockito.when(repository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(usuario));
@@ -106,7 +110,7 @@ public class UsuarioServiceTest {
 
 	@Test // validarEmail
 	public void deveValidarEmail() {
-		Assertions.assertDoesNotThrow(() -> {
+		assertDoesNotThrow(() -> {
 			// Cenario
 			Mockito.when(repository.existsByEmail(Mockito.anyString())).thenReturn(false);
 
@@ -117,7 +121,7 @@ public class UsuarioServiceTest {
 
 	@Test // validarEmail
 	public void deveLancarErroAoValidarEmailQuandoExistirEmailCadastrado() {
-		Assertions.assertThrows(RegraNegocioException.class, () -> {
+		assertThrows(RegraNegocioException.class, () -> {
 			// Cenário
 			Mockito.when(repository.existsByEmail(Mockito.anyString())).thenReturn(true);
 

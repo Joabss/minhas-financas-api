@@ -48,7 +48,6 @@ public class LancamentoServiceImpl implements LancamentoService {
 	public void deletar(Lancamento lancamento) {
 		Objects.requireNonNull(lancamento.getId());
 		repository.delete(lancamento);
-
 	}
 
 	@Override
