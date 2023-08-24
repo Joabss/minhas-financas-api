@@ -30,7 +30,7 @@ public class UsuarioController {
 	private final LancamentoService lancamentoService;
 
 	@PostMapping("/autenticar")
-	public ResponseEntity autenticar(@RequestBody UsuarioDTO dto) {
+	public ResponseEntity<Object> autenticar(@RequestBody UsuarioDTO dto) {
 		try {
 			Usuario usuarioAutenticado = service.autenticar(dto.getEmail(), dto.getSenha());
 			return ResponseEntity.ok(usuarioAutenticado);
@@ -40,7 +40,7 @@ public class UsuarioController {
 	}
 
 	@PostMapping
-	public ResponseEntity salvar(@RequestBody UsuarioDTO dto) {
+	public ResponseEntity<Object> salvar(@RequestBody UsuarioDTO dto) {
 		Usuario usuario = Usuario.builder()
 				.nome(dto.getNome())
 				.email(dto.getEmail())
@@ -48,18 +48,18 @@ public class UsuarioController {
 
 		try {
 			Usuario usuarioSalvo = service.salvarUsuario(usuario);
-			return new ResponseEntity(usuarioSalvo, HttpStatus.CREATED);
+			return new ResponseEntity<Object>(usuarioSalvo, HttpStatus.CREATED);
 		} catch (RegraNegocioException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 
 	@GetMapping("{id}/saldo")
-	public ResponseEntity obterSaldo(@PathVariable("id") Long id) {
+	public ResponseEntity<BigDecimal> obterSaldo(@PathVariable("id") Long id) {
 		Optional<Usuario> usuario = service.obterPorId(id);
 
 		if (!usuario.isPresent()) {
-			return new ResponseEntity(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<BigDecimal>(HttpStatus.NOT_FOUND);
 		}
 
 		BigDecimal saldo = lancamentoService.obterSaldoPorUsuario(id);

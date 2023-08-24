@@ -36,12 +36,11 @@ public class LancamentoController {
 	private final UsuarioService usuarioService;
 
 	@GetMapping
-	public ResponseEntity buscar(
+	public ResponseEntity<Object> buscar(
 			@RequestParam(value = "descricao", required = false) String descricao,
 			@RequestParam(value = "mes", required = false) Integer mes,
-			@RequestParam(value = "ano", required = false) Integer ano,
-			@RequestParam("usuario") Long idUsuario
-			) {
+			@RequestParam(value = "ano", required = false) Integer ano, @RequestParam("usuario") Long idUsuario
+	) {
 		Lancamento lancamentoFiltro = new Lancamento();
 		lancamentoFiltro.setDescricao(descricao);
 		lancamentoFiltro.setMes(mes);
@@ -58,18 +57,25 @@ public class LancamentoController {
 		List<Lancamento> lancamentos = service.buscar(lancamentoFiltro);
 		return ResponseEntity.ok(lancamentos);
 	}
-	
+
+	@GetMapping("{id}")
+	public ResponseEntity obterLancamento(@PathVariable("id") Long id) {
+		return service.obterPorId(id)
+				.map(lancamento -> new ResponseEntity(converter(lancamento), HttpStatus.OK))
+				.orElseGet(() -> new ResponseEntity(HttpStatus.NOT_FOUND));
+	}
+
 	@PostMapping
-	public ResponseEntity salvar(@RequestBody LancamentoDTO dto) {
+	public ResponseEntity<Object> salvar(@RequestBody LancamentoDTO dto) {
 		try {
 			Lancamento entidade = converter(dto);
 			entidade = service.salvar(entidade);
-			return new ResponseEntity(entidade, HttpStatus.CREATED);
+			return new ResponseEntity<Object>(entidade, HttpStatus.CREATED);
 		} catch (RegraNegocioException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
-	
+
 	@PutMapping("{id}")
 	public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody LancamentoDTO dto) {
 		return service.obterPorId(id).map(entity -> {
@@ -105,17 +111,26 @@ public class LancamentoController {
 	}
 
 	@DeleteMapping("{id}")
-	public ResponseEntity deletar(@PathVariable("id") Long id) {
+	public ResponseEntity<String> deletar(@PathVariable("id") Long id) {
 		return service.obterPorId(id).map(entity -> {
 			try {
 				service.deletar(entity);
-				return new ResponseEntity(HttpStatus.NO_CONTENT);
+				return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
 			} catch (RegraNegocioException e) {
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}
-		}).orElseGet(() -> new ResponseEntity("Lançamento não encontrado na base de Dados.", HttpStatus.BAD_REQUEST));
+		}).orElseGet(
+				() -> new ResponseEntity<String>("Lançamento não encontrado na base de Dados.", HttpStatus.BAD_REQUEST)
+		);
 	}
-	
+
+	private LancamentoDTO converter(Lancamento lancamento) {
+		return LancamentoDTO.builder().id(lancamento.getId()).descricao(lancamento.getDescricao())
+				.valor(lancamento.getValor()).mes(lancamento.getMes()).ano(lancamento.getAno())
+				.status(lancamento.getStatus().name()).tipo(lancamento.getTipo().name())
+				.usuario(lancamento.getUsuario().getId()).build();
+	}
+
 	private Lancamento converter(LancamentoDTO dto) {
 		Lancamento lancamento = new Lancamento();
 		lancamento.setId(dto.getId());
@@ -124,22 +139,20 @@ public class LancamentoController {
 		lancamento.setMes(dto.getMes());
 		lancamento.setValor(dto.getValor());
 
-		Usuario usuario = usuarioService
-		.obterPorId(dto.getUsuario())
-		.orElseThrow(() -> new RegraNegocioException("Usuário não encontrado para o Id informado."));
+		Usuario usuario = usuarioService.obterPorId(dto.getUsuario())
+				.orElseThrow(() -> new RegraNegocioException("Usuário não encontrado para o Id informado."));
 
 		lancamento.setUsuario(usuario);
-		
-		if(dto.getTipo() != null) {
+
+		if (dto.getTipo() != null) {
 			lancamento.setTipo(TipoLancamento.valueOf(dto.getTipo()));
 		}
-		
-		if(dto.getStatus() != null) {
-			lancamento.setStatus(StatusLancamento.valueOf(dto.getStatus()));			
+
+		if (dto.getStatus() != null) {
+			lancamento.setStatus(StatusLancamento.valueOf(dto.getStatus()));
 		}
 
 		return lancamento;
 	}
-	
-	
+
 }
