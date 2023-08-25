@@ -40,6 +40,7 @@ public class UsuarioServiceTest {
 			Mockito.when(repository.save(Mockito.any(Usuario.class))).thenReturn(usuario);
 
 			// Ação
+
 			Usuario usuarioSalvo = service.salvarUsuario(new Usuario());
 
 			// Verificação
@@ -49,21 +50,23 @@ public class UsuarioServiceTest {
 			assertEquals(usuarioSalvo.getEmail(), "email@email.com");
 			assertEquals(usuarioSalvo.getSenha(), "senha");
 		});
+
 	}
 
 	@Test
 	public void naoDeveSalvarUmUsuarioComEmailJaCadastrado() {
+		// Cenário
+
+		Usuario usuario = criarusuario();
+		Mockito.doThrow(RegraNegocioException.class).when(service).validarEmail("email@email.com");
+
+		// Ação
 		assertThrows(RegraNegocioException.class, () -> {
-			// Cenário
-			Usuario usuario = criarusuario();
-			Mockito.doThrow(RegraNegocioException.class).when(service).validarEmail("email@email.com");
-
-			// Ação
 			service.salvarUsuario(usuario);
-
-			// Verificacao
-			Mockito.verify(repository, Mockito.never()).save(usuario);
 		});
+
+		// Verificacao
+		Mockito.verify(repository, Mockito.never()).save(usuario);
 	}
 
 	@Test
@@ -86,46 +89,46 @@ public class UsuarioServiceTest {
 
 	@Test
 	public void deveLancarErroQuandoNaoEncontrarUsuarioCadastradoComEmailInformado() {
+		// Cenario
+
+		Mockito.when(repository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
+
+		// Ação
 		assertThrows(ErroAutenticacao.class, () -> {
-			// Cenario
-
-			Mockito.when(repository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
-
-			// Ação
 			service.autenticar("email@email.com", "senha");
 		});
 	}
 
 	@Test
 	public void deveLancarErroQuandoSenhaNaoBater() {
-		assertThrows(ErroAutenticacao.class, () -> {
-			// Cenario
-			Usuario usuario = criarusuario();
-			Mockito.when(repository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(usuario));
+		// Cenario
+		Usuario usuario = criarusuario();
+		Mockito.when(repository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(usuario));
 
-			// Ação
+		// Ação
+		assertThrows(ErroAutenticacao.class, () -> {
 			service.autenticar("email@email.com", "1234");
 		});
 	}
 
 	@Test // validarEmail
 	public void deveValidarEmail() {
-		assertDoesNotThrow(() -> {
-			// Cenario
-			Mockito.when(repository.existsByEmail(Mockito.anyString())).thenReturn(false);
+		// Cenario
+		Mockito.when(repository.existsByEmail(Mockito.anyString())).thenReturn(false);
 
-			// Ação / Execução
+		// Ação / Execução
+		assertDoesNotThrow(() -> {
 			service.validarEmail("email@email.com");
 		});
 	}
 
 	@Test // validarEmail
 	public void deveLancarErroAoValidarEmailQuandoExistirEmailCadastrado() {
-		assertThrows(RegraNegocioException.class, () -> {
-			// Cenário
-			Mockito.when(repository.existsByEmail(Mockito.anyString())).thenReturn(true);
+		// Cenário
+		Mockito.when(repository.existsByEmail(Mockito.anyString())).thenReturn(true);
 
-			// Ação
+		// Ação
+		assertThrows(RegraNegocioException.class, () -> {
 			service.validarEmail("email@email.com");
 		});
 	}

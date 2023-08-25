@@ -65,85 +65,85 @@ public class LancamentoServiceTest {
 
 	@Test
 	public void naoDeveSalvarUmLancamentoQuandoHouverErroDeValidacao() {
+		// Cenário
+		Lancamento lancamentoParaSalvar = criarLancamento();
+
+		Mockito.doThrow(RegraNegocioException.class).when(service).validar(lancamentoParaSalvar);
+		// Ação
 		assertThrows(RegraNegocioException.class, () -> {
-			// Cenário
-			Lancamento lancamentoParaSalvar = criarLancamento();
-
-			Mockito.doThrow(RegraNegocioException.class).when(service).validar(lancamentoParaSalvar);
-			// Ação
 			service.salvar(lancamentoParaSalvar);
-
-			// Verificacao
-			Mockito.verify(repository, Mockito.never()).save(lancamentoParaSalvar);
 		});
+
+		// Verificacao
+		Mockito.verify(repository, Mockito.never()).save(lancamentoParaSalvar);
 	}
 
 	@Test
 	public void deveAtualizarUmLancamento() {
+		// Cenário
+		Lancamento lancamentoSalvo = criarLancamento();
+		lancamentoSalvo.setId(1L);
+
+		Mockito.doNothing().when(service).validar(lancamentoSalvo);
+
+		Mockito.when(repository.save(lancamentoSalvo)).thenReturn(lancamentoSalvo);
+
+		// Ação / Execução
 		assertDoesNotThrow(() -> {
-			// Cenário
-			Lancamento lancamentoSalvo = criarLancamento();
-			lancamentoSalvo.setId(1L);
-
-			Mockito.doNothing().when(service).validar(lancamentoSalvo);
-
-			Mockito.when(repository.save(lancamentoSalvo)).thenReturn(lancamentoSalvo);
-
-			// Ação / Execução
 			service.atualizar(lancamentoSalvo);
-
-			// Verificação
-			Mockito.verify(repository, Mockito.times(1)).save(lancamentoSalvo);
 		});
+
+		// Verificação
+		Mockito.verify(repository, Mockito.times(1)).save(lancamentoSalvo);
 	}
 
 	@Test
 	public void deveLancarErroAoTentarAtualizarLancamentoNaoSalvo() {
+		// Cenário
+		Lancamento lancamentoParaAtualizar = criarLancamento();
+
+		Mockito.doNothing().when(service).validar(lancamentoParaAtualizar);
+
+		Mockito.when(repository.save(lancamentoParaAtualizar)).thenReturn(lancamentoParaAtualizar);
+
+		// Ação / Execução
 		assertThrows(NullPointerException.class, () -> {
-			// Cenário
-			Lancamento lancamentoParaAtualizar = criarLancamento();
-
-			Mockito.doNothing().when(service).validar(lancamentoParaAtualizar);
-
-			Mockito.when(repository.save(lancamentoParaAtualizar)).thenReturn(lancamentoParaAtualizar);
-
-			// Ação / Execução
 			service.atualizar(lancamentoParaAtualizar);
-
-			// Verificação
-			Mockito.verify(repository, Mockito.never()).save(lancamentoParaAtualizar);
-
 		});
+
+		// Verificação
+		Mockito.verify(repository, Mockito.never()).save(lancamentoParaAtualizar);
+
 	}
 
 	@Test
 	public void deveDeletarUmLancamento() {
+		// Cenário
+		Lancamento lancamentoParaDeletar = criarLancamento();
+		lancamentoParaDeletar.setId(1L);
+
+		// Ação / Execução
 		assertDoesNotThrow(() -> {
-			// Cenário
-			Lancamento lancamentoParaDeletar = criarLancamento();
-			lancamentoParaDeletar.setId(1L);
-
-			// Ação / Execução
 			service.deletar(lancamentoParaDeletar);
-
-			// Verificação
-			Mockito.verify(repository).delete(lancamentoParaDeletar);
 		});
+
+		// Verificação
+		Mockito.verify(repository).delete(lancamentoParaDeletar);
 	}
 
 	@Test
 	public void deveLancarErroAoTentarDeletarLancamentoNaoSalvo() {
+		// Cenário
+		Lancamento lancamentoParaDeletar = criarLancamento();
+
+		// Ação / Execução
 		assertThrows(NullPointerException.class, () -> {
-			// Cenário
-			Lancamento lancamentoParaDeletar = criarLancamento();
-
-			// Ação / Execução
 			service.deletar(lancamentoParaDeletar);
-
-			// Verificação
-
-			Mockito.verify(repository, Mockito.never()).delete(lancamentoParaDeletar);
 		});
+
+		// Verificação
+
+		Mockito.verify(repository, Mockito.never()).delete(lancamentoParaDeletar);
 	}
 
 	@Test
