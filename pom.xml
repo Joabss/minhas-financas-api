@@ -12,7 +12,7 @@
 	<groupId>com.joabss</groupId>
 	<artifactId>finance-control-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>finance-control-api</name>
+	<name>minhas-financas-api</name>
 	<description>Projeto de gerenciamento de finanças pessoais</description>
 
 	<properties>
