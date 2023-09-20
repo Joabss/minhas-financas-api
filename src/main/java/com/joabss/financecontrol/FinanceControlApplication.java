@@ -1,12 +1,12 @@
-package com.joabss.minhasfinancas;
+package com.joabss.financecontrol;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MinhasfinancasApplication{
+public class FinanceControlApplication{
 
 	public static void main(String[] args) {
-		SpringApplication.run(MinhasfinancasApplication.class, args);
+		SpringApplication.run(FinanceControlApplication.class, args);
 	}
 }

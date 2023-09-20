@@ -1,4 +1,4 @@
-package com.joabss.minhasfinancas.model.entity;
+package com.joabss.financecontrol.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

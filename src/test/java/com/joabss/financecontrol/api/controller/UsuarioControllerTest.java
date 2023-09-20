@@ -1,4 +1,4 @@
-package com.joabss.minhasfinancas.api.controller;
+package com.joabss.financecontrol.api.controller;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,12 +16,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joabss.minhasfinancas.api.dto.UsuarioDTO;
-import com.joabss.minhasfinancas.exception.ErroAutenticacao;
-import com.joabss.minhasfinancas.exception.RegraNegocioException;
-import com.joabss.minhasfinancas.model.entity.Usuario;
-import com.joabss.minhasfinancas.service.LancamentoService;
-import com.joabss.minhasfinancas.service.UsuarioService;
+import com.joabss.financecontrol.api.dto.UsuarioDTO;
+import com.joabss.financecontrol.exception.ErroAutenticacao;
+import com.joabss.financecontrol.exception.RegraNegocioException;
+import com.joabss.financecontrol.model.entity.Usuario;
+import com.joabss.financecontrol.service.LancamentoService;
+import com.joabss.financecontrol.service.UsuarioService;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")

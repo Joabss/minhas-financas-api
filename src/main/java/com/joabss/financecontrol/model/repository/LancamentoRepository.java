@@ -1,4 +1,4 @@
-package com.joabss.minhasfinancas.model.repository;
+package com.joabss.financecontrol.model.repository;
 
 import java.math.BigDecimal;
 
@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.joabss.minhasfinancas.model.entity.Lancamento;
-import com.joabss.minhasfinancas.model.enums.StatusLancamento;
-import com.joabss.minhasfinancas.model.enums.TipoLancamento;
+import com.joabss.financecontrol.model.entity.Lancamento;
+import com.joabss.financecontrol.model.enums.StatusLancamento;
+import com.joabss.financecontrol.model.enums.TipoLancamento;
 
 public interface LancamentoRepository extends JpaRepository<Lancamento, Long> {
 

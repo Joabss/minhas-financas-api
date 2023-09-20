@@ -1,4 +1,4 @@
-package com.joabss.minhasfinancas.service.impl;
+package com.joabss.financecontrol.service.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,12 +11,12 @@ import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.joabss.minhasfinancas.exception.RegraNegocioException;
-import com.joabss.minhasfinancas.model.entity.Lancamento;
-import com.joabss.minhasfinancas.model.enums.StatusLancamento;
-import com.joabss.minhasfinancas.model.enums.TipoLancamento;
-import com.joabss.minhasfinancas.model.repository.LancamentoRepository;
-import com.joabss.minhasfinancas.service.LancamentoService;
+import com.joabss.financecontrol.exception.RegraNegocioException;
+import com.joabss.financecontrol.model.entity.Lancamento;
+import com.joabss.financecontrol.model.enums.StatusLancamento;
+import com.joabss.financecontrol.model.enums.TipoLancamento;
+import com.joabss.financecontrol.model.repository.LancamentoRepository;
+import com.joabss.financecontrol.service.LancamentoService;
 
 @Service
 public class LancamentoServiceImpl implements LancamentoService {
@@ -69,6 +69,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 
 	@Override
 	public void validar(Lancamento lancamento) {
+
 		if(lancamento.getDescricao() == null || lancamento.getDescricao().trim().equals("")) {
 			throw new RegraNegocioException("Informe uma descrição válida.");
 		}

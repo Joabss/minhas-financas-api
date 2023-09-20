@@ -1,11 +1,11 @@
-package com.joabss.minhasfinancas.service;
+package com.joabss.financecontrol.service;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import com.joabss.minhasfinancas.model.entity.Lancamento;
-import com.joabss.minhasfinancas.model.enums.StatusLancamento;
+import com.joabss.financecontrol.model.entity.Lancamento;
+import com.joabss.financecontrol.model.enums.StatusLancamento;
 
 public interface LancamentoService {
 

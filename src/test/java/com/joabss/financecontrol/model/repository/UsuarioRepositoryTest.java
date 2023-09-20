@@ -1,4 +1,4 @@
-package com.joabss.minhasfinancas.model.repository;
+package com.joabss.financecontrol.model.repository;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -16,7 +16,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.joabss.minhasfinancas.model.entity.Usuario;
+import com.joabss.financecontrol.model.entity.Usuario;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")

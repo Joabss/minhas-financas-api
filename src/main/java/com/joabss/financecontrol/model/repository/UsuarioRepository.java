@@ -1,10 +1,10 @@
-package com.joabss.minhasfinancas.model.repository;
+package com.joabss.financecontrol.model.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.joabss.minhasfinancas.model.entity.Usuario;
+import com.joabss.financecontrol.model.entity.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 

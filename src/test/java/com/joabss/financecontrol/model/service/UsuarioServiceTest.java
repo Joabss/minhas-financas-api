@@ -1,4 +1,4 @@
-package com.joabss.minhasfinancas.model.service;
+package com.joabss.financecontrol.model.service;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,11 +15,11 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.joabss.minhasfinancas.exception.ErroAutenticacao;
-import com.joabss.minhasfinancas.exception.RegraNegocioException;
-import com.joabss.minhasfinancas.model.entity.Usuario;
-import com.joabss.minhasfinancas.model.repository.UsuarioRepository;
-import com.joabss.minhasfinancas.service.impl.UsuarioServiceImpl;
+import com.joabss.financecontrol.exception.ErroAutenticacao;
+import com.joabss.financecontrol.exception.RegraNegocioException;
+import com.joabss.financecontrol.model.entity.Usuario;
+import com.joabss.financecontrol.model.repository.UsuarioRepository;
+import com.joabss.financecontrol.service.impl.UsuarioServiceImpl;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")

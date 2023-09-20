@@ -1,4 +1,4 @@
-package com.joabss.minhasfinancas.model.service;
+package com.joabss.financecontrol.model.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -24,13 +23,14 @@ import org.springframework.data.domain.Example;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.joabss.minhasfinancas.exception.RegraNegocioException;
-import com.joabss.minhasfinancas.model.entity.Lancamento;
-import com.joabss.minhasfinancas.model.entity.Usuario;
-import com.joabss.minhasfinancas.model.enums.StatusLancamento;
-import com.joabss.minhasfinancas.model.enums.TipoLancamento;
-import com.joabss.minhasfinancas.model.repository.LancamentoRepository;
-import com.joabss.minhasfinancas.service.impl.LancamentoServiceImpl;
+import com.joabss.financecontrol.exception.RegraNegocioException;
+import com.joabss.financecontrol.model.entity.Lancamento;
+import com.joabss.financecontrol.model.entity.Usuario;
+import com.joabss.financecontrol.model.enums.StatusLancamento;
+import com.joabss.financecontrol.model.enums.TipoLancamento;
+import com.joabss.financecontrol.model.repository.LancamentoRepository;
+import com.joabss.financecontrol.model.repository.LancamentoRepositoryTest;
+import com.joabss.financecontrol.service.impl.LancamentoServiceImpl;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -38,17 +38,16 @@ public class LancamentoServiceTest {
 
 	@SpyBean
 	LancamentoServiceImpl service;
-
 	@MockBean
 	LancamentoRepository repository;
 
 	@Test
-	public void deveSalvarUmLancamentoComSucesso() {
+	public void deveSalvarUmLancamento() {
 		assertDoesNotThrow(() -> {
 			// Cenário
-			Lancamento lancamentoASalvar = criarLancamento();
+			Lancamento lancamentoASalvar = LancamentoRepositoryTest.criarLancamento();
 			Mockito.doNothing().when(service).validar(lancamentoASalvar);
-			Lancamento lancamentoSalvo = criarLancamento();
+			Lancamento lancamentoSalvo = LancamentoRepositoryTest.criarLancamento();
 			lancamentoSalvo.setId(1L);
 			Mockito.when(repository.save(lancamentoASalvar)).thenReturn(lancamentoSalvo);
 
@@ -66,7 +65,7 @@ public class LancamentoServiceTest {
 	@Test
 	public void naoDeveSalvarUmLancamentoQuandoHouverErroDeValidacao() {
 		// Cenário
-		Lancamento lancamentoParaSalvar = criarLancamento();
+		Lancamento lancamentoParaSalvar = LancamentoRepositoryTest.criarLancamento();
 
 		Mockito.doThrow(RegraNegocioException.class).when(service).validar(lancamentoParaSalvar);
 		// Ação
@@ -81,8 +80,9 @@ public class LancamentoServiceTest {
 	@Test
 	public void deveAtualizarUmLancamento() {
 		// Cenário
-		Lancamento lancamentoSalvo = criarLancamento();
+		Lancamento lancamentoSalvo = LancamentoRepositoryTest.criarLancamento();
 		lancamentoSalvo.setId(1L);
+		lancamentoSalvo.setStatus(StatusLancamento.PENDENTE);
 
 		Mockito.doNothing().when(service).validar(lancamentoSalvo);
 
@@ -100,7 +100,7 @@ public class LancamentoServiceTest {
 	@Test
 	public void deveLancarErroAoTentarAtualizarLancamentoNaoSalvo() {
 		// Cenário
-		Lancamento lancamentoParaAtualizar = criarLancamento();
+		Lancamento lancamentoParaAtualizar = LancamentoRepositoryTest.criarLancamento();
 
 		Mockito.doNothing().when(service).validar(lancamentoParaAtualizar);
 
@@ -119,7 +119,7 @@ public class LancamentoServiceTest {
 	@Test
 	public void deveDeletarUmLancamento() {
 		// Cenário
-		Lancamento lancamentoParaDeletar = criarLancamento();
+		Lancamento lancamentoParaDeletar = LancamentoRepositoryTest.criarLancamento();
 		lancamentoParaDeletar.setId(1L);
 
 		// Ação / Execução
@@ -132,9 +132,9 @@ public class LancamentoServiceTest {
 	}
 
 	@Test
-	public void deveLancarErroAoTentarDeletarLancamentoNaoSalvo() {
+	public void deveLancarErroAoTentarDeletarUmLancamentoQueAindaNaoFoiSalvo() {
 		// Cenário
-		Lancamento lancamentoParaDeletar = criarLancamento();
+		Lancamento lancamentoParaDeletar = LancamentoRepositoryTest.criarLancamento();
 
 		// Ação / Execução
 		assertThrows(NullPointerException.class, () -> {
@@ -149,7 +149,7 @@ public class LancamentoServiceTest {
 	@Test
 	public void deveFiltrarLancamento() {
 		// Cenário
-		Lancamento lancamento = criarLancamento();
+		Lancamento lancamento = LancamentoRepositoryTest.criarLancamento();
 		lancamento.setId(1L);
 
 		List<Lancamento> lista = Arrays.asList(lancamento);
@@ -163,9 +163,9 @@ public class LancamentoServiceTest {
 	}
 
 	@Test
-	public void atualizarStatus() {
+	public void deveAtualizarOStatusDeUmLancamento() {
 		// Cenário
-		Lancamento lancamento = criarLancamento();
+		Lancamento lancamento = LancamentoRepositoryTest.criarLancamento();
 		lancamento.setId(1L);
 		lancamento.setStatus(StatusLancamento.PENDENTE);
 
@@ -185,7 +185,7 @@ public class LancamentoServiceTest {
 		// Cenário
 		Long id = 1L;
 
-		Lancamento lancamento = criarLancamento();
+		Lancamento lancamento = LancamentoRepositoryTest.criarLancamento();
 		lancamento.setId(1L);
 
 		Mockito.when(repository.findById(id)).thenReturn(Optional.of(lancamento));
@@ -198,7 +198,7 @@ public class LancamentoServiceTest {
 	}
 
 	@Test
-	public void deveRetornarVazioQuandoLancamentoNaoExiste() {
+	public void deveRetornarVazioQuandoOLancamentoNaoExiste() {
 		// Cenário
 		Long id = 1L;
 
@@ -286,17 +286,5 @@ public class LancamentoServiceTest {
 	@Test
 	public void NaoDeveObterSaldoPorUsuario() {
 
-	}
-
-	public Lancamento criarLancamento() {
-		return Lancamento.builder()
-				.ano(2019)
-				.mes(1)
-				.descricao("lancamento qualquer")
-				.valor(BigDecimal.valueOf(10))
-				.tipo(TipoLancamento.RECEITA)
-				.status(StatusLancamento.PENDENTE)
-				.dataCadastro(LocalDate.now())
-				.build();
 	}
 }

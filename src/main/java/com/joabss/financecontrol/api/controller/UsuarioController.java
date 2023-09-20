@@ -1,4 +1,4 @@
-package com.joabss.minhasfinancas.api.controller;
+package com.joabss.financecontrol.api.controller;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -12,39 +12,48 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.joabss.minhasfinancas.api.dto.UsuarioDTO;
-import com.joabss.minhasfinancas.exception.ErroAutenticacao;
-import com.joabss.minhasfinancas.exception.RegraNegocioException;
-import com.joabss.minhasfinancas.model.entity.Usuario;
-import com.joabss.minhasfinancas.service.LancamentoService;
-import com.joabss.minhasfinancas.service.UsuarioService;
+import com.joabss.financecontrol.api.dto.TokenDTO;
+import com.joabss.financecontrol.api.dto.UsuarioDTO;
+import com.joabss.financecontrol.exception.ErroAutenticacao;
+import com.joabss.financecontrol.exception.RegraNegocioException;
+import com.joabss.financecontrol.model.entity.Usuario;
+import com.joabss.financecontrol.service.JwtService;
+import com.joabss.financecontrol.service.LancamentoService;
+import com.joabss.financecontrol.service.UsuarioService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("api/usuarios")
+@RequestMapping("/api/usuarios")
 @RequiredArgsConstructor
 public class UsuarioController {
 
 	private final UsuarioService service;
 	private final LancamentoService lancamentoService;
+	private final JwtService jwtService;
 
 	@PostMapping("/autenticar")
-	public ResponseEntity<Object> autenticar(@RequestBody UsuarioDTO dto) {
+	public ResponseEntity<?> autenticar( @RequestBody UsuarioDTO dto ) {
 		try {
 			Usuario usuarioAutenticado = service.autenticar(dto.getEmail(), dto.getSenha());
-			return ResponseEntity.ok(usuarioAutenticado);
-		} catch (ErroAutenticacao e) {
+			String token = jwtService.gerarToken(usuarioAutenticado);
+			TokenDTO tokenDTO = TokenDTO.builder()
+											.id(usuarioAutenticado.getId())
+											.nome(usuarioAutenticado.getNome())
+											.token(token).build();
+			return ResponseEntity.ok(tokenDTO);
+		}catch (ErroAutenticacao e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 
 	@PostMapping
 	public ResponseEntity<Object> salvar(@RequestBody UsuarioDTO dto) {
+
 		Usuario usuario = Usuario.builder()
-				.nome(dto.getNome())
-				.email(dto.getEmail())
-				.senha(dto.getSenha()).build();
+					.nome(dto.getNome())
+					.email(dto.getEmail())
+					.senha(dto.getSenha()).build();
 
 		try {
 			Usuario usuarioSalvo = service.salvarUsuario(usuario);

@@ -2,15 +2,17 @@ package com.joabss.financecontrol.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class UsuarioDTO {
-	private String email;
+public class TokenDTO {
+
+	private Long id;
 	private String nome;
-	private String senha;
+	private String token;
+	
 }

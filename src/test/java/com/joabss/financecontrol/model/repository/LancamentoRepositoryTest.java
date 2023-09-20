@@ -1,4 +1,4 @@
-package com.joabss.minhasfinancas.model.repository;
+package com.joabss.financecontrol.model.repository;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,9 +20,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.joabss.minhasfinancas.model.entity.Lancamento;
-import com.joabss.minhasfinancas.model.enums.StatusLancamento;
-import com.joabss.minhasfinancas.model.enums.TipoLancamento;
+import com.joabss.financecontrol.model.entity.Lancamento;
+import com.joabss.financecontrol.model.enums.StatusLancamento;
+import com.joabss.financecontrol.model.enums.TipoLancamento;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -100,7 +100,7 @@ public class LancamentoRepositoryTest {
 		return lancamento;
 	}
 
-	public Lancamento criarLancamento() {
+	public static Lancamento criarLancamento() {
 		return Lancamento.builder()
 				.ano(2019)
 				.mes(1)

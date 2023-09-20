@@ -1,8 +1,8 @@
-package com.joabss.minhasfinancas.service;
+package com.joabss.financecontrol.service;
 
 import java.util.Optional;
 
-import com.joabss.minhasfinancas.model.entity.Usuario;
+import com.joabss.financecontrol.model.entity.Usuario;
 
 public interface UsuarioService {
 
